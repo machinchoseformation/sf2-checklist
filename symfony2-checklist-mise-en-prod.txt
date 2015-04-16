@@ -1,0 +1,75 @@
+Symfony2 Checklist mise en prod
+
+/* AVANT L'ENVOI DES FICHIERS */
+
+    Tests verts
+
+    Configurer le serveur de prod
+        >> php app/check.php dans la console
+        >> web/config.php dans le navigateur (ajouter son ip dans le fichier)
+        Version de PHP
+            timezone ?
+            short open tag, magic_quotes_gpc, register_globals, session.auto_start
+        Extensions
+            intl
+        Installer APC
+
+        VirtualHost pointant sur 
+            /web/app.php
+
+        Sous-domaines ?
+
+        Cron jobs
+
+        Installer composer / git / phpunit / etc.
+
+    parameters de prod
+        secret
+        mailer de prod
+            disable_delivery ?
+            delivery_address ?
+            email hardcodé ?
+        bdd
+        etc.
+        logs
+            envoi par email
+
+    cache doctrine
+        http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/caching.html#result-cache
+
+    doctrine:migrations:diff
+
+    supprimer les dossiers de cache (ftp...)
+
+
+/* APRÈS L'ENVOI */
+
+    app_dev.php ? 
+
+    composer install --optimize-autoloader
+
+    parameters.yml ok ?
+
+    permissions sur les dossiers app/cache et app/logs
+        http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup
+
+    app/console 
+        cache:clear --env=prod
+        assetic:dump --env=prod
+        assets:install
+
+        doctrine:database:create (vérifier l'encodage)
+        doctrine:migrations:migrate
+
+    Pour une première mise en prod seulement : 
+        doctrine:fixtures:load --fixtures=/path/to/initialdatafixtures 
+        ou dump de db
+        ou Command
+
+    Relancer les tests
+
+    Tester les logs
+    Tester les emails
+    Tester les crons
+
+
